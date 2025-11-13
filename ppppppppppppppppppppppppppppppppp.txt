@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM SECURITY BREACH DETECTED</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background-color: #000;
+            color: #0f0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+            background-color: rgba(0, 10, 0, 0.8);
+            padding: 20px;
+            border: 1px solid #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 10px;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        h1 {
+            font-size: 28px;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #0a0;
+            margin-top: 5px;
+        }
+
+        .loading-container {
+            width: 100%;
+            background-color: #001100;
+            border: 1px solid #0f0;
+            padding: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .loading-bar {
+            height: 30px;
+            width: 0%;
+            background: linear-gradient(90deg, #0a0, #0f0, #0a0);
+            transition: width 0.3s;
+            box-shadow: 0 0 15px #0f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .loading-text {
+            margin: 10px 0;
+            font-size: 16px;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .percentage {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .panels {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .panel {
+            flex: 1;
+            background-color: #001100;
+            border: 1px solid #0f0;
+            padding: 15px;
+            text-align: left;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .panel-title {
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .code-output {
+            height: 150px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .code-line {
+            margin: 3px 0;
+            white-space: nowrap;
+        }
+
+        .prompt {
+            color: #0f0;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .hack-message {
+            display: none;
+            font-size: 32px;
+            color: #f00;
+            text-shadow: 0 0 15px #f00;
+            margin: 30px 0;
+            animation: pulse 1.5s infinite, shake 0.5s infinite;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .warning {
+            color: #ff0;
+            margin: 20px 0;
+            font-size: 18px;
+            text-shadow: 0 0 10px #ff0;
+            display: none;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #0a0;
+        }
+
+        .flashing {
+            animation: flash 0.5s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .ip-address {
+            color: #0af;
+            text-shadow: 0 0 5px #0af;
+        }
+
+        .access-granted {
+            color: #0f0;
+            animation: granted 2s infinite;
+        }
+
+        @keyframes granted {
+            0%, 100% { text-shadow: 0 0 10px #0f0; }
+            50% { text-shadow: 0 0 20px #0f0, 0 0 30px #0f0; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="container">
+        <div class="header">
+            <h1>SYSTEM SECURITY BREACH DETECTED</h1>
+            <p class="subtitle">CRITICAL THREAT LEVEL: SEVERE</p>
+        </div>
+
+        <div class="loading-container">
+            <div class="loading-bar" id="loadingBar"></div>
+            <div class="percentage" id="percentage">0%</div>
+        </div>
+        
+        <div class="loading-text" id="statusText">Initializing deep system penetration...</div>
+
+        <div class="panels">
+            <div class="panel">
+                <div class="panel-title">SYSTEM ACCESS</div>
+                <div class="code-output" id="accessOutput">
+                    <div class="code-line"><span class="prompt">root@blackhat:~$</span> nmap -sS 192.168.1.1/24</div>
+                    <div class="code-line"><span class="prompt">root@blackhat:~$</span> hydra -l admin -P passlist.txt ssh://192.168.1.105</div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">DATA EXTRACTION</div>
+                <div class="code-output" id="dataOutput">
+                    <div class="code-line"><span class="prompt">data-miner#</span> Scanning for sensitive files...</div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">NETWORK TRAFFIC</div>
+                <div class="code-output" id="networkOutput">
+                    <div class="code-line"><span class="prompt">packet-sniffer></span> Monitoring network packets...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hack-message" id="hackMessage">
+            SYSTEM BREACH SUCCESSFUL!<br>
+            DEVICE COMPROMISED!
+        </div>
+
+        <div class="warning" id="warning">
+            WARNING: All your data has been extracted and encrypted!
+        </div>
+
+        <div class="footer">
+            &copy; 2023 Global Security Agency | This incident has been logged and reported
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Matrix background animation
+            const canvas = document.getElementById('matrixCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Matrix characters
+            const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&[]";
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            
+            // Create an array of drops - one per column
+            const drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
+            }
+            
+            // Draw the matrix animation
+            function drawMatrix() {
+                // Semi-transparent black to create trail effect
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#0f0';
+                ctx.font = `${fontSize}px monospace`;
+                
+                for (let i = 0; i < drops.length; i++) {
+                    // Random character
+                    const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+                    
+                    // x coordinate: i * fontSize, y coordinate: drops[i] * fontSize
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    // Reset drop if it reached bottom or randomly
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    
+                    // Move drop down
+                    drops[i]++;
+                }
+            }
+            
+            // Start matrix animation
+            setInterval(drawMatrix, 35);
+            
+            // Hacking simulation
+            const loadingBar = document.getElementById('loadingBar');
+            const percentage = document.getElementById('percentage');
+            const statusText = document.getElementById('statusText');
+            const accessOutput = document.getElementById('accessOutput');
+            const dataOutput = document.getElementById('dataOutput');
+            const networkOutput = document.getElementById('networkOutput');
+            const hackMessage = document.getElementById('hackMessage');
+            const warning = document.getElementById('warning');
+            
+            // Fake code lines for different panels
+            const accessLines = [
+                "Bypassing firewall...",
+                "Scanning for open ports...",
+                "Port 22 (SSH) found open",
+                "Trying common credentials...",
+                "Login successful!",
+                "Escalating privileges...",
+                "Root access obtained!",
+                "Establishing persistence..."
+            ];
+            
+            const dataLines = [
+                "Searching for documents...",
+                "Found 247 PDF files",
+                "Found 153 DOCX files",
+                "Scanning for passwords...",
+                "Extracting browser history...",
+                "Downloading personal photos...",
+                "Accessing email database...",
+                "Encrypting sensitive files..."
+            ];
+            
+            const networkLines = [
+                "Intercepting network traffic...",
+                "Capturing login credentials...",
+                "Monitoring HTTPS traffic...",
+                "Bypassing SSL encryption...",
+                "Injecting malicious packets...",
+                "Redirecting DNS requests...",
+                "Establishing C&C connection...",
+                "Exfiltrating data to remote server..."
+            ];
+            
+            let progress = 0;
+            let accessIndex = 0;
+            let dataIndex = 0;
+            let networkIndex = 0;
+            
+            // Function to add a new line to a panel
+            function addCodeLine(panel, text, type = "normal") {
+                const line = document.createElement('div');
+                line.className = 'code-line';
+                
+                if (type === "ip") {
+                    line.innerHTML = `<span class="prompt">${text.split(' ')[0]}</span> <span class="ip-address">${text.split(' ').slice(1).join(' ')}</span>`;
+                } else if (type === "access") {
+                    line.innerHTML = `<span class="prompt">${text.split(' ')[0]}</span> <span class="access-granted">${text.split(' ').slice(1).join(' ')}</span>`;
+                } else {
+                    line.innerHTML = `<span class="prompt">${text.split(' ')[0]}</span> ${text.split(' ').slice(1).join(' ')}`;
+                }
+                
+                panel.appendChild(line);
+                panel.scrollTop = panel.scrollHeight;
+            }
+            
+            // Function to update loading progress
+            function updateProgress() {
+                progress += Math.random() * 8;
+                if (progress > 100) progress = 100;
+                
+                loadingBar.style.width = `${progress}%`;
+                percentage.textContent = `${Math.floor(progress)}%`;
+                
+                // Update status text based on progress
+                if (progress < 20) {
+                    statusText.textContent = "Scanning network for vulnerabilities...";
+                } else if (progress < 40) {
+                    statusText.textContent = "Exploiting security weaknesses...";
+                } else if (progress < 60) {
+                    statusText.textContent = "Gaining system access...";
+                } else if (progress < 80) {
+                    statusText.textContent = "Extracting sensitive data...";
+                } else if (progress < 100) {
+                    statusText.textContent = "Establishing backdoor...";
+                } else {
+                    statusText.textContent = "System compromised successfully!";
+                    statusText.className = "loading-text flashing";
+                }
+                
+                // Add code lines at certain progress points
+                if (progress > (accessIndex + 1) * 12.5 && accessIndex < accessLines.length) {
+                    addCodeLine(accessOutput, accessLines[accessIndex], accessIndex === 4 ? "access" : "normal");
+                    accessIndex++;
+                }
+                
+                if (progress > (dataIndex + 1) * 12.5 && dataIndex < dataLines.length) {
+                    addCodeLine(dataOutput, dataLines[dataIndex]);
+                    dataIndex++;
+                }
+                
+                if (progress > (networkIndex + 1) * 12.5 && networkIndex < networkLines.length) {
+                    addCodeLine(networkOutput, networkLines[networkIndex], networkIndex === 5 ? "ip" : "normal");
+                    networkIndex++;
+                }
+                
+                // When progress reaches 100%, show the hack message
+                if (progress >= 100) {
+                    setTimeout(function() {
+                        hackMessage.style.display = 'block';
+                        warning.style.display = 'block';
+                        
+                        // Add final messages to panels
+                        setTimeout(function() {
+                            addCodeLine(accessOutput, "Backdoor established on port 4444", "access");
+                            addCodeLine(dataOutput, "All sensitive data encrypted with RSA-4096");
+                            addCodeLine(networkOutput, "C&C server: 185.243.112.15:8080", "ip");
+                        }, 500);
+                    }, 1000);
+                    
+                    clearInterval(progressInterval);
+                }
+            }
+            
+            // Start the progress simulation
+            const progressInterval = setInterval(updateProgress, 400);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        });
+    </script>
+</body>
+</html>
